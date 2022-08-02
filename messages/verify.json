@@ -1,0 +1,11 @@
+{
+  "commandDescription": "Ensures that certain test coverage treshold is reached for the given apex classes",
+  "pathToFileFlagDescription": "Project relative path to the json file containing the test execution results.",
+  "requiredCoverageFlagDescription": "Number of the percentage of coverage treshold to reach",
+  "classesToCheckFlagDescription": "Comma separated list of apex classes to verify",
+  "errorNoClassesToCheck": "There are no apex classes to check coverage.",
+  "errorInsufficientCoverageForClasses": "Included test classes should met at least the required coverage of '%s'%. Classes without enough coverage: '%s'",
+  "examples": [
+    "sfdx coverage:verify --path test-results/results.json --requiredcoverage 90 --classes AccountTriggerHandler,ContactTriggerHandler"
+  ]
+}
