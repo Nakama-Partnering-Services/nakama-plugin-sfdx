@@ -167,6 +167,11 @@ Imagine that you want all of our apex classes to have at least a 90% of test cov
 
 ```sh
 sfdx nps:coverage:verify -p test-results/results.json -r 90 -c $NON_TEST_CLASSES
+
+List of analyzed apex classes with coverage:
+ContactTriggerHandler: 92%
+AccountTriggerHandler: 68%
+ERROR running nps:coverage:verify:  Included apex classes should met at least the required coverage of 90%. Classes without enough coverage: AccountTriggerHandler
 ```
 
 And voilà! 🥳
