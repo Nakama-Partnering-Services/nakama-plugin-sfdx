@@ -7,7 +7,7 @@ import { resolve as resolvePath } from 'path';
 
 Messages.importMessagesDirectory(__dirname);
 
-const messages = Messages.loadMessages('plugin-coverage', 'verify');
+const messages = Messages.loadMessages('nakama-plugin-sfdx', 'verify');
 
 export default class Verify extends SfdxCommand {
 	public static description = messages.getMessage('commandDescription');
@@ -19,15 +19,18 @@ export default class Verify extends SfdxCommand {
 	protected static flagsConfig = {
 		path: flags.string({
 			char: 'p',
-			description: messages.getMessage('pathToFileFlagDescription')
+			description: messages.getMessage('pathToFileFlagDescription'),
+			required: true,
 		}),
 		requiredcoverage: flags.number({
 			char: 'r',
-			description: messages.getMessage('requiredCoverageFlagDescription')
+			description: messages.getMessage('requiredCoverageFlagDescription'),
+			default: 75,
 		}),
 		classes: flags.string({
 			char: 'c',
-			description: messages.getMessage('classesToCheckFlagDescription')
+			description: messages.getMessage('classesToCheckFlagDescription'),
+			required: true,
 		})
 	};
 
