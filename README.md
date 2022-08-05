@@ -99,7 +99,7 @@ EXAMPLES
   $ sfdx coverage:verify --path test-results/results.json --requiredcoverage 90 --classes AccountTriggerHandler,ContactTriggerHandler
 ```
 
-_See code: [src/commands/nps/coverage/verify.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v0.0.1/src/commands/nps/coverage/verify.ts)_
+_See code: [src/commands/nps/coverage/verify.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.0.0/src/commands/nps/coverage/verify.ts)_
 <!-- commandsstop -->
 
 ## Walkthrough
