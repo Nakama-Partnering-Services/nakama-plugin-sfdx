@@ -20,22 +20,22 @@ export default class Verify extends SfdxCommand {
 		path: flags.string({
 			char: 'p',
 			description: messages.getMessage('pathToFileFlagDescription'),
-			required: true,
+			required: true
 		}),
-		requiredcoverage: flags.number({
+		'required-coverage': flags.number({
 			char: 'r',
 			description: messages.getMessage('requiredCoverageFlagDescription'),
-			default: 75,
+			default: 75
 		}),
 		classes: flags.string({
 			char: 'c',
 			description: messages.getMessage('classesToCheckFlagDescription'),
-			required: true,
+			required: true
 		})
 	};
 
 	public async run(): Promise<AnyJson> {
-		const requiredCoverage = (this.flags.requiredcoverage || 75) as number;
+		const requiredCoverage = (this.flags['required-coverage'] || 75) as number;
 
 		let deploymentResult;
 		try {

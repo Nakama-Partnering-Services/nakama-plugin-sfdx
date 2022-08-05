@@ -41,7 +41,7 @@ sfdx force:source:deploy --wait 60 --checkonly --manifest manifest/package.xml -
 ```
 
 ```sh
-sfdx nps:coverage:verify --path test-results/results.json --requiredcoverage 90 --classes AccountTriggerHandler,ContactTriggerHandler
+sfdx nps:coverage:verify --path test-results/results.json --required-coverage 90 --classes AccountTriggerHandler,ContactTriggerHandler
 ```
 
 ## Getting Started
@@ -85,7 +85,7 @@ FLAGS
   -p, --path=<value>                                                                (required) project relative path to
                                                                                     the json file containing the test
                                                                                     execution results
-  -r, --requiredcoverage=<value>                                                    [default: 75] number of the
+  -r, --required-coverage=<value>                                                   [default: 75] number of the
                                                                                     percentage of coverage treshold to
                                                                                     reach
   --json                                                                            format output as json
@@ -96,10 +96,10 @@ DESCRIPTION
   Verifies that specified apex classes have a coverage above a certain treshold
 
 EXAMPLES
-  $ sfdx coverage:verify --path test-results/results.json --requiredcoverage 90 --classes AccountTriggerHandler,ContactTriggerHandler
+  $ sfdx coverage:verify --path test-results/results.json --required-coverage 90 --classes AccountTriggerHandler,ContactTriggerHandler
 ```
 
-_See code: [src/commands/nps/coverage/verify.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.0.0/src/commands/nps/coverage/verify.ts)_
+_See code: [src/commands/nps/coverage/verify.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.0.2/src/commands/nps/coverage/verify.ts)_
 <!-- commandsstop -->
 
 ## Walkthrough
