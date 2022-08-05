@@ -50,13 +50,8 @@
 	],
 	"license": "MIT",
 	"oclif": {
-		"commands": "./src/commands",
-		"bin": "sfdx",
-		"topics": {
-			"hello": {
-				"description": "Commands to say hello."
-			}
-		}
+		"commands": "./lib/commands",
+		"bin": "sfdx"
 	},
 	"repository": "Nakama-Partnering-Services/nakama-plugin-sfdx",
 	"scripts": {
