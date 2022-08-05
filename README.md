@@ -49,7 +49,7 @@ sfdx nps:coverage:verify --path test-results/results.json --requiredcoverage 90 
 ### Prerequisites
 
 **Node v14.6.0 or above is required**.
-To check if Salesforce CLI runs under a supported node version for Nakama Plugin SFDX, run `sfdx --version`. You should see a node version above v.14.6.0.
+To check if Salesforce CLI runs under a supported node version for NPS, run `sfdx --version`. You should see a node version above v.14.6.0. You should see a node version above v.14.6.0 to use NPS.
 
 If you encounter this issue whereas the node version is OK on the running environment, try to [install the Salesforce CLI via npm](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli.htm#sfdx_setup_install_cli_npm) (`npm install sfdx-cli --global`).
 
@@ -132,7 +132,7 @@ From the project repo folder, the CI pipeline will run the following command:
 sfdx sgd:source:delta --source sfdx-source --from origin/$GITHUB_BASE_REF --to HEAD --output deltas --ignore .forceignore --generate-delta
 ```
 
-_See [sfdx-git-delta plugin](https://github.com/scolladon/sfdx-git-delta)_
+_See [sfdx-git-delta](https://github.com/scolladon/sfdx-git-delta)_
 
 which means:
 
