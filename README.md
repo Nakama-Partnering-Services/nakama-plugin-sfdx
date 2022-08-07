@@ -68,15 +68,15 @@ If you run your CI/CD jobs inside a Docker image, you can add the plugin to your
 ## How to use it?
 
 <!-- commands -->
-* [`sfdx nps:coverage:verify -p <string> -c <string> [-r <number>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npscoverageverify--p-string--c-string--r-number---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfdx nps:coverage:verify -p <filepath> -c <array> [-r <integer>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npscoverageverify--p-filepath--c-array--r-integer---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
-## `sfdx nps:coverage:verify -p <string> -c <string> [-r <number>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+## `sfdx nps:coverage:verify -p <filepath> -c <array> [-r <integer>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
 Verifies that specified apex classes have a coverage above a certain treshold
 
 ```
 USAGE
-  $ sfdx nps:coverage:verify -p <string> -c <string> [-r <number>] [--json] [--loglevel
+  $ sfdx nps:coverage:verify -p <filepath> -c <array> [-r <integer>] [--json] [--loglevel
     trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 FLAGS
@@ -99,7 +99,7 @@ EXAMPLES
   $ sfdx coverage:verify --path test-results/results.json --required-coverage 90 --classes AccountTriggerHandler,ContactTriggerHandler
 ```
 
-_See code: [src/commands/nps/coverage/verify.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.0.2/src/commands/nps/coverage/verify.ts)_
+_See code: [src/commands/nps/coverage/verify.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.0.3/src/commands/nps/coverage/verify.ts)_
 <!-- commandsstop -->
 
 ## Walkthrough
