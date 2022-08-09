@@ -5,6 +5,8 @@
 	"author": "Gabriel Serrano @jdkgabri",
 	"bugs": "https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/issues",
 	"dependencies": {
+		"@commitlint/cli": "^17.0.3",
+		"@commitlint/config-conventional": "^17.0.3",
 		"@oclif/core": "^1",
 		"@salesforce/command": "^5",
 		"@salesforce/core": "^3",
@@ -27,6 +29,7 @@
 		"eslint-plugin-jsdoc": "^35",
 		"eslint-plugin-prettier": "^3",
 		"eslint-plugin-typescript": "^0",
+		"husky": "^8.0.0",
 		"mocha": "^9",
 		"nyc": "^15",
 		"oclif": "^3",
@@ -62,6 +65,7 @@
 		"posttest": "eslint src/**/*.ts test/**/*.ts",
 		"prepack": "rimraf lib && tsc -b && oclif manifest && oclif readme",
 		"test": "nyc --extension .ts --require ts-node/register mocha --forbid-only \"test/**/*.test.ts\"",
-		"version": "oclif readme && git add README.md"
+		"version": "oclif readme && git add README.md",
+		"prepare": "husky install"
 	}
 }
