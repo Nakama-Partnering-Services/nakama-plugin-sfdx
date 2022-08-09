@@ -1,6 +1,6 @@
 import * as os from 'os';
 import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages } from '@salesforce/core'; // SfError
+import { Messages, SfError } from '@salesforce/core';
 import { AnyJson } from '@salesforce/ts-types';
 
 import { promisify } from 'util';
@@ -15,32 +15,35 @@ Messages.importMessagesDirectory(__dirname);
 
 const messages = Messages.loadMessages('nakama-plugin-sfdx', 'mappaths');
 
-const parseXml = (xmlFile) => {
+const parseXml = (xmlContent) => {
 	return new XMLParser({
 		ignoreDeclaration: true,
 		attributeNamePrefix: '@_',
 		ignoreAttributes: false
-	}).parse(xmlFile);
+	}).parse(xmlContent);
 };
 
-const buildXml = (obj) => {
+const buildXml = (jsonObject) => {
 	return new XMLBuilder({
 		format: true,
 		attributeNamePrefix: '@_',
 		ignoreAttributes: false
-	}).build(obj);
+	}).build(jsonObject);
 };
 
-const remap = async (obj) => {
-	const allClasses = await globPromise('sfdx-source/**/*.{cls,trigger}');
+const remap = async (coverageContent) => {
+	const allApexFiles = await globPromise('sfdx-source/**/*.{cls,trigger}');
 
-	for (const file of obj.coverage.packages.package.classes.class) {
+	if (!allApexFiles.length) {
+		throw new SfError(messages.getMessage('errorNoApexFiles'), 'No apex files');
+	}
+
+	for (const file of coverageContent.coverage.packages.package.classes.class) {
 		const fileName = file['@_filename'];
-		console.log(fileName);
-		const fullPath = allClasses.filter(
+		// Warning: an issue may happen if an apex class and an apex trigger have the same name.
+		const fullPath = allApexFiles.filter(
 			(item) => item.endsWith(fileName + '.cls') || item.endsWith(fileName + '.trigger')
 		)[0];
-		console.log(fullPath);
 
 		file['@_filename'] = fullPath;
 	}
@@ -62,20 +65,24 @@ export default class Mappaths extends SfdxCommand {
 		type: flags.enum({
 			char: 't',
 			description: messages.getMessage('typeFlagDescription'),
+			required: true,
 			options: ['cobertura'] // clover, html-spa, html, json, json-summary, lcovonly, none, teamcity, text, text-summary
 		})
 	};
 
 	public async run(): Promise<AnyJson> {
-		const cobertura = readFileSync(this.flags.path, { encoding: 'utf-8' });
-		const regex = /filename="no-map[\\|/]/g
-		const coberturaReplaced = cobertura.replaceAll(regex, 'filename="');
+		const fileContent = readFileSync(this.flags.path, { encoding: 'utf-8' });
 
-		const output = parseXml(coberturaReplaced);
+		// if (this.flags.type !== 'cobertura') return; // Currenly only cobertura is suported, enforced by enum
 
-		await remap(output);
+		const regex = /filename="no-map[\\|/]/g;
+		const replacedContent = fileContent.replaceAll(regex, 'filename="');
 
-		const xmlContent = buildXml(output);
+		const jsonContent = parseXml(replacedContent);
+
+		await remap(jsonContent);
+
+		const xmlContent = buildXml(jsonContent);
 
 		writeFileSync(this.flags.path, xmlContent);
 

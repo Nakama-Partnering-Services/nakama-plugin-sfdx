@@ -17,6 +17,7 @@
     -   [Prerequisites](#prerequisites)
     -   [Installation](#installation)
 -   [How to use it?](#how-to-use-it)
+-   [`sfdx nps:coverage:formatters:mappaths -p <filepath> -t cobertura [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npscoverageformattersmappaths--p-filepath--t-cobertura---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 -   [`sfdx nps:coverage:verify -p <filepath> [-r <number>] -c <string> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npscoverageverify--p-filepath--r-number--c-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 -   [Walkthrough](#walkthrough)
     -   [Get a folder with all the files](#get-a-folder-with-all-the-files)
@@ -68,23 +69,23 @@ If you run your CI/CD jobs inside a Docker image, you can add the plugin to your
 ## How to use it?
 
 <!-- commands -->
-* [`sfdx nps:coverage:formatters:mappaths -p <filepath> [-t cobertura] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npscoverageformattersmappaths--p-filepath--t-cobertura---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfdx nps:coverage:formatters:mappaths -p <filepath> -t cobertura [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npscoverageformattersmappaths--p-filepath--t-cobertura---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 * [`sfdx nps:coverage:verify -p <filepath> -c <array> [-r <integer>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npscoverageverify--p-filepath--c-array--r-integer---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
-## `sfdx nps:coverage:formatters:mappaths -p <filepath> [-t cobertura] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+## `sfdx nps:coverage:formatters:mappaths -p <filepath> -t cobertura [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
 Map the paths in a given file to replace them with the actual project relative location for classes and triggers
 
 ```
 USAGE
-  $ sfdx nps:coverage:formatters:mappaths -p <filepath> [-t cobertura] [--json] [--loglevel
+  $ sfdx nps:coverage:formatters:mappaths -p <filepath> -t cobertura [--json] [--loglevel
     trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 FLAGS
   -p, --path=<value>                                                                (required) project relative path to
                                                                                     the file containing the test
                                                                                     execution results
-  -t, --type=(cobertura)                                                            format type of the file
+  -t, --type=(cobertura)                                                            (required) format type of the file
   --json                                                                            format output as json
   --loglevel=(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)  [default: warn] logging level for
                                                                                     this command invocation
@@ -96,7 +97,7 @@ EXAMPLES
   $ sfdx nps:coverage:formatters:mappaths --path test-results/coverage/cobertura.xml --type cobertura
 ```
 
-_See code: [src/commands/nps/coverage/formatters/mappaths.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.0.3/src/commands/nps/coverage/formatters/mappaths.ts)_
+_See code: [src/commands/nps/coverage/formatters/mappaths.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.0.4/src/commands/nps/coverage/formatters/mappaths.ts)_
 
 ## `sfdx nps:coverage:verify -p <filepath> -c <array> [-r <integer>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -127,7 +128,7 @@ EXAMPLES
   $ sfdx nps:coverage:verify --path test-results/results.json --required-coverage 90 --classes AccountTriggerHandler,ContactTriggerHandler
 ```
 
-_See code: [src/commands/nps/coverage/verify.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.0.3/src/commands/nps/coverage/verify.ts)_
+_See code: [src/commands/nps/coverage/verify.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.0.4/src/commands/nps/coverage/verify.ts)_
 <!-- commandsstop -->
 
 ## Walkthrough
@@ -138,16 +139,17 @@ Let’s take a look at the following scenario:
 
 In our example, we have the following files:
 
--   _Custom Field added:_ Account.NumberOfContacts\_\_c
--   _Apex Class added:_ ContactTriggerHandler
--   _Apex Class added:_ ContactTriggerHandlerTest
--   _Apex Class modified:_ AccountTriggerHandler
--   _Apex Class modified:_ AccountTriggerHandlerTest
+-   _Custom Field added:_ `Account.NumberOfContacts__c`
+-   _Apex Class added:_ `ContactTriggerHandler`
+-   _Apex Class added:_ `ContactTriggerHandlerTest`
+-   _Apex Class modified:_ `AccountTriggerHandler`
+-   _Apex Class modified:_ `AccountTriggerHandlerTest`
 
 In this situation, we would expect the CI pipeline to:
 
 1. **Detect the relevant apex classes in the PR to verify**: `ContactTriggerHandler`, `AccountTriggerHandler`
 2. **Report an error for those classes without enough test coverage**: `AccountTriggerHandler`
+3. **Optional: if using Gitlab CI, highglight coverage in MR diff changes for**: `ContactTriggerHandler`, `AccountTriggerHandler`
 
 So let’s do it!
 
@@ -170,7 +172,29 @@ which means:
 The simplest option to deploy the incremental changes is to use `force:source:deploy` command with `-x` parameter:
 
 ```sh
-sfdx force:source:deploy --wait 60 --checkonly --manifest deltas/package/package.xml --postdestructivechanges deltas/destructiveChanges/destructiveChanges.xml --verbose --testlevel RunLocalTests --json > test-results/results.json
+sfdx force:source:deploy --wait 60 --checkonly --manifest deltas/package/package.xml --postdestructivechanges deltas/destructiveChanges/destructiveChanges.xml --verbose --testlevel RunLocalTests --coverageformatters cobertura --resultsdir test-results --json > test-results/results.json
+```
+
+### Optional, if using Gitlab CI: remap coverage formatter file with actual project locations paths for apex files
+
+Due to the apex files actually belonging to an org, the coverage formatters uses apex files paths with a `no-map/` default path. We can remap them properly to the real paths for the actual files location in our project with:
+
+
+```sh
+sfdx nps:coverage:formatters:mappaths -p test-results/cobertura.xml -t cobertura
+```
+
+> :warning: Currently there is a limitation where an issue will likely happen if there are `.cls` and `.trigger` files with the same name
+
+(Bonus) Make sure that you specify the following in your deployment job:
+
+```yml
+artifacts:
+    when: always
+    reports:
+        coverage_report:
+            coverage_format: cobertura
+            path: test-results/coverage/cobertura.xml
 ```
 
 ### Recommended: Print deployment result
@@ -195,14 +219,20 @@ Imagine that you want all of our apex classes to have at least a 90% of test cov
 
 ```sh
 sfdx nps:coverage:verify -p test-results/results.json -r 90 -c $NON_TEST_CLASSES
+```
 
+And voilà! 🥳
+
+We should get and output like:
+
+```sh
 List of analyzed apex classes with coverage:
 ContactTriggerHandler: 92%
 AccountTriggerHandler: 68%
 ERROR running nps:coverage:verify:  Included apex classes should met at least the required coverage of 90%. Classes without enough coverage: AccountTriggerHandler
 ```
 
-And voilà! 🥳
+Besides, if using Gitlab CI and followe the optional steps, in our MR diff changes we should be able to spot the [Test Coverage Visualization](https://docs.gitlab.com/ee/ci/testing/test_coverage_visualization.html).
 
 ## Versioning
 

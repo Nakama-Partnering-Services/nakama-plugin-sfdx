@@ -1,3 +1,5 @@
+// Note: currently it only supports verification of coverage for apex classes, but not apex triggers nor flows.
+
 import * as os from 'os';
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages, SfError } from '@salesforce/core';
@@ -46,8 +48,8 @@ export default class Verify extends SfdxCommand {
 			.filter((item) => item.percentage < coverage)
 			.map((item) => item.class);
 
-		if (classesNotCovered.length > 0) {
-			throw new SfError(messages.getMessage('errorClassesNotCovered', [coverage, classesNotCovered.join(', ')]));
+		if (classesNotCovered.length) {
+			throw new SfError(messages.getMessage('errorClassesNotCovered', [coverage, classesNotCovered.join(', ')]), 'ClaasesNotCovered');
 		}
 
 		this.ux.log(messages.getMessage('noClassesWithInsufficientCoverage'));

@@ -2,5 +2,6 @@
 	"commandDescription": "Map the paths in a given file to replace them with the actual project relative location for classes and triggers",
 	"pathToFileFlagDescription": "project relative path to the file containing the test execution results",
 	"typeFlagDescription": "format type of the file",
+	"errorNoApexFiles": "No apex files have being found in the project directory. Make sure this command runs at a sfdx project level and it contains the relevant apex files affected by the test execution",
 	"examples": ["sfdx nps:coverage:formatters:mappaths --path test-results/coverage/cobertura.xml --type cobertura"]
 }
