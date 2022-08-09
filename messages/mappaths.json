@@ -1,0 +1,6 @@
+{
+	"commandDescription": "Map the paths in a given file to replace them with the actual project relative location for classes and triggers",
+	"pathToFileFlagDescription": "project relative path to the file containing the test execution results",
+	"typeFlagDescription": "format type of the file",
+	"examples": ["sfdx nps:coverage:formatters:mappaths --path test-results/coverage/cobertura.xml --type cobertura"]
+}

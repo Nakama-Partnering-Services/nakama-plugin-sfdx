@@ -68,7 +68,35 @@ If you run your CI/CD jobs inside a Docker image, you can add the plugin to your
 ## How to use it?
 
 <!-- commands -->
+* [`sfdx nps:coverage:formatters:mappaths -p <filepath> [-t cobertura] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npscoverageformattersmappaths--p-filepath--t-cobertura---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 * [`sfdx nps:coverage:verify -p <filepath> -c <array> [-r <integer>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npscoverageverify--p-filepath--c-array--r-integer---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+
+## `sfdx nps:coverage:formatters:mappaths -p <filepath> [-t cobertura] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+
+Map the paths in a given file to replace them with the actual project relative location for classes and triggers
+
+```
+USAGE
+  $ sfdx nps:coverage:formatters:mappaths -p <filepath> [-t cobertura] [--json] [--loglevel
+    trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+
+FLAGS
+  -p, --path=<value>                                                                (required) project relative path to
+                                                                                    the file containing the test
+                                                                                    execution results
+  -t, --type=(cobertura)                                                            format type of the file
+  --json                                                                            format output as json
+  --loglevel=(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)  [default: warn] logging level for
+                                                                                    this command invocation
+
+DESCRIPTION
+  Map the paths in a given file to replace them with the actual project relative location for classes and triggers
+
+EXAMPLES
+  $ sfdx nps:coverage:formatters:mappaths --path test-results/coverage/cobertura.xml --type cobertura
+```
+
+_See code: [src/commands/nps/coverage/formatters/mappaths.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.0.3/src/commands/nps/coverage/formatters/mappaths.ts)_
 
 ## `sfdx nps:coverage:verify -p <filepath> -c <array> [-r <integer>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -96,7 +124,7 @@ DESCRIPTION
   Verifies that specified apex classes have a coverage above a certain treshold
 
 EXAMPLES
-  $ sfdx coverage:verify --path test-results/results.json --required-coverage 90 --classes AccountTriggerHandler,ContactTriggerHandler
+  $ sfdx nps:coverage:verify --path test-results/results.json --required-coverage 90 --classes AccountTriggerHandler,ContactTriggerHandler
 ```
 
 _See code: [src/commands/nps/coverage/verify.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.0.3/src/commands/nps/coverage/verify.ts)_

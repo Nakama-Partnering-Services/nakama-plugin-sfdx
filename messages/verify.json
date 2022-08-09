@@ -10,6 +10,6 @@
 	"errorClassesNotCovered": "Included apex classes should met at least the required coverage of %s%. Classes without enough coverage: %s",
 	"noClassesWithInsufficientCoverage": "No classes with insufficient coverage found",
 	"examples": [
-		"sfdx coverage:verify --path test-results/results.json --required-coverage 90 --classes AccountTriggerHandler,ContactTriggerHandler"
+		"sfdx nps:coverage:verify --path test-results/results.json --required-coverage 90 --classes AccountTriggerHandler,ContactTriggerHandler"
 	]
 }
