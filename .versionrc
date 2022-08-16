@@ -1,0 +1,17 @@
+{
+	"types": [
+		{ "type": "feat", "section": "Features" },
+		{ "type": "fix", "section": "Bug Fixes" },
+		{ "type": "chore", "hidden": true },
+		{ "type": "docs", "hidden": true },
+		{ "type": "style", "hidden": true },
+		{ "type": "refactor", "hidden": true },
+		{ "type": "perf", "hidden": true },
+		{ "type": "test", "hidden": true },
+		{ "type": "build", "hidden": true },
+		{ "type": "ci", "hidden": true },
+		{ "type": "revert", "hidden": true }
+	],
+	"commitUrlFormat": "https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/commit/{{hash}}",
+	"compareUrlFormat": "https://github.com/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}"
+  }
