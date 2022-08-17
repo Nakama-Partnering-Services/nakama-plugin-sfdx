@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/compare/v1.0.4...v1.1.0) (2022-08-17)
+
+
+### Features
+
+* add versionobsoleteflows command ([0820f2c](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/commit/0820f2c0cde39c9eb7b5276128e9d25c3c1e028b))
+
 ### 1.0.4 (2022-08-16)
 
 
