@@ -31,14 +31,6 @@ const buildXml = (jsonObject) => {
 };
 
 const getFlowMembers = (packageTypes) => {
-	if (!packageTypes) {
-		return; // destructiveChanges.xml is empty
-	}
-
-	if (!Array.isArray(packageTypes)) {
-		packageTypes = [packageTypes];
-	}
-
 	const flowType = packageTypes.filter((type) => type.name === 'Flow')[0];
 
 	if (!flowType) {
@@ -64,11 +56,11 @@ const getObsoleteFlowVersions = async (flowMembers) => {
 			`sfdx force:data:soql:query --query "SELECT Definition.DeveloperName, VersionNumber FROM Flow WHERE Status = 'Obsolete' AND Definition.DeveloperName IN ('${flowMembers}')" --usetoolingapi --json`
 		)
 	).stdout;
-	return JSON.parse(result);
+	return JSON.parse(result).result.records;
 };
 
 const replaceFlowMembersWithObsoleteVersions = (obsoleteFlowVersions, packageTypes) => {
-	const flowsWithVersions = obsoleteFlowVersions.records.map(
+	const flowsWithVersions = obsoleteFlowVersions.map(
 		(version) => `${version.Definition.DeveloperName}-${version.VersionNumber}`
 	);
 
@@ -96,7 +88,15 @@ export default class Versionobsoleteflows extends SfdxCommand {
 		const fileContent = readFileSync(this.flags.path, { encoding: 'utf-8' });
 
 		const jsonContent = parseXml(fileContent);
-		const packageTypes = jsonContent.Package.types;
+		let packageTypes = jsonContent.Package.types;
+
+		if (!packageTypes) {
+			return; // destructiveChanges.xml is empty
+		}
+
+		if (!Array.isArray(packageTypes)) {
+			packageTypes = [packageTypes];
+		}
 
 		const flowMembers = getFlowMembers(packageTypes);
 
