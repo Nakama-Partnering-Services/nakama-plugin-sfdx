@@ -3,7 +3,7 @@ import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages } from '@salesforce/core';
 import { AnyJson } from '@salesforce/ts-types';
 
-import sfdx from 'sfdx-node';
+import { sfdx } from 'sfdx-node';
 
 import { readFileSync, writeFileSync } from 'fs';
 
