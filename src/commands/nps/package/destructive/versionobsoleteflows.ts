@@ -3,11 +3,12 @@ import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages } from '@salesforce/core';
 import { AnyJson } from '@salesforce/ts-types';
 
-import { sfdx } from 'sfdx-node';
-
 import { readFileSync, writeFileSync } from 'fs';
-
 import { XMLParser, XMLBuilder } from 'fast-xml-parser';
+import { promisify } from 'util';
+import { exec } from 'child_process';
+
+const syncExec = promisify(exec);
 
 Messages.importMessagesDirectory(__dirname);
 
@@ -58,11 +59,12 @@ const getFlowMembers = (packageTypes) => {
 };
 
 const getObsoleteFlowVersions = async (flowMembers) => {
-	return await sfdx.force.data.soqlQuery({
-		query: `SELECT Definition.DeveloperName, VersionNumber FROM Flow WHERE Status = 'Obsolete' AND Definition.DeveloperName IN ('${flowMembers}')`,
-		usetoolingapi: true,
-		json: true
-	});
+	const result = (
+		await syncExec(
+			`sfdx force:data:soql:query --query "SELECT Definition.DeveloperName, VersionNumber FROM Flow WHERE Status = 'Obsolete' AND Definition.DeveloperName IN ('${flowMembers}')" --usetoolingapi --json`
+		)
+	).stdout;
+	return JSON.parse(result);
 };
 
 const replaceFlowMembersWithObsoleteVersions = (obsoleteFlowVersions, packageTypes) => {
