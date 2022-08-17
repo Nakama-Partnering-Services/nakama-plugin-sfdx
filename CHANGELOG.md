@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.4](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/compare/v1.1.3...v1.1.4) (2022-08-17)
+
+
+### Bug Fixes
+
+* flowMembers output adjustments ([5144a4a](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/commit/5144a4ac6acdabe01e66a5ce4bbd604bcf6cc383))
+
 ### [1.1.3](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/compare/v1.1.2...v1.1.3) (2022-08-17)
 
 
