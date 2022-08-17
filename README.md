@@ -19,6 +19,7 @@
 -   [How to use it?](#how-to-use-it)
 -   [`sfdx nps:coverage:formatters:mappaths -p <filepath> -t cobertura [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npscoverageformattersmappaths--p-filepath--t-cobertura---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 -   [`sfdx nps:coverage:verify -p <filepath> [-r <number>] -c <string> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npscoverageverify--p-filepath--r-number--c-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+-   [`sfdx nps:package:destructive:versionobsoleteflows -p <filepath> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npspackagedestructiveversionobsoleteflows--p-filepath---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 -   [Walkthrough](#walkthrough)
     -   [Get a folder with all the files](#get-a-folder-with-all-the-files)
     -   [Deploy the delta metadata and get --json output](#deploy-the-delta-metadata-and-get---json-output)
@@ -43,6 +44,10 @@ sfdx force:source:deploy --wait 60 --checkonly --manifest manifest/package.xml -
 
 ```sh
 sfdx nps:coverage:verify --path test-results/results.json --required-coverage 90 --classes AccountTriggerHandler,ContactTriggerHandler
+```
+
+```sh
+sfdx nps:package:destructive:versionobsoleteflows --path deltas/destructiveChanges/destructiveChanges.xml
 ```
 
 ## Getting Started
@@ -71,6 +76,7 @@ If you run your CI/CD jobs inside a Docker image, you can add the plugin to your
 <!-- commands -->
 * [`sfdx nps:coverage:formatters:mappaths -p <filepath> -t cobertura [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npscoverageformattersmappaths--p-filepath--t-cobertura---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 * [`sfdx nps:coverage:verify -p <filepath> -c <array> [-r <integer>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npscoverageverify--p-filepath--c-array--r-integer---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfdx nps:package:destructive:versionobsoleteflows -p <filepath> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-npspackagedestructiveversionobsoleteflows--p-filepath---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
 ## `sfdx nps:coverage:formatters:mappaths -p <filepath> -t cobertura [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -129,6 +135,31 @@ EXAMPLES
 ```
 
 _See code: [src/commands/nps/coverage/verify.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.0.4/src/commands/nps/coverage/verify.ts)_
+
+## `sfdx nps:package:destructive:versionobsoleteflows -p <filepath> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+
+Replace the Flow members in a XML file by all the Obsolete flow versions in the default target org
+
+```
+USAGE
+  $ sfdx nps:package:destructive:versionobsoleteflows -p <filepath> [--json] [--loglevel
+    trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+
+FLAGS
+  -p, --path=<value>                                                                (required) project relative path to
+                                                                                    the destructiveChange.xml
+  --json                                                                            format output as json
+  --loglevel=(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)  [default: warn] logging level for
+                                                                                    this command invocation
+
+DESCRIPTION
+  Replace the Flow members in a XML file by all the Obsolete flow versions in the default target org
+
+EXAMPLES
+  $ sfdx nps:package:destructive:versionobsoleteflows --path deltas/destructiveChanges/destructiveChanges.xml
+```
+
+_See code: [src/commands/nps/package/destructive/versionobsoleteflows.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.0.4/src/commands/nps/package/destructive/versionobsoleteflows.ts)_
 <!-- commandsstop -->
 
 ## Walkthrough
@@ -139,14 +170,16 @@ Let’s take a look at the following scenario:
 
 In our example, we have the following files:
 
+-   _Flow deleted:_ `AccountFlow`
 -   _Custom Field added:_ `Account.NumberOfContacts__c`
 -   _Apex Class added:_ `ContactTriggerHandler`
 -   _Apex Class added:_ `ContactTriggerHandlerTest`
 -   _Apex Class modified:_ `AccountTriggerHandler`
 -   _Apex Class modified:_ `AccountTriggerHandlerTest`
 
-In this situation, we would expect the CI pipeline to:
+In this situation, we would expect the CLI plugin to:
 
+1. **Handle the flow entries in `destructiveChanges.xml` for deletion**: `AccountFlow-1`
 1. **Detect the relevant apex classes in the PR to verify**: `ContactTriggerHandler`, `AccountTriggerHandler`
 2. **Report an error for those classes without enough test coverage**: `AccountTriggerHandler`
 3. **Optional: if using Gitlab CI, highglight coverage in MR diff changes for**: `ContactTriggerHandler`, `AccountTriggerHandler`
@@ -166,6 +199,16 @@ _See [sfdx-git-delta](https://github.com/scolladon/sfdx-git-delta)_
 which means:
 
 > Analyze the differences between the PR targer branch and the source branch and create a folder ´deltas´ with all the modified and added files there.
+
+### Replace Flow member entries in `destructiveChanges.xml` by their obsolete versions
+
+Since flows can not be deleted with SFDX, what we actually want to delete is flow version:
+
+```sh
+sfdx nps:package:destructive:versionobsoleteflows --path deltas/destructiveChanges/destructiveChanges.xml
+```
+
+> :warning: This is still subjected to the restriction where a version needs to be `Inactive` for deletion
 
 ### Deploy the delta metadata and get --json output
 

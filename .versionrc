@@ -11,7 +11,5 @@
 		{ "type": "build", "hidden": true },
 		{ "type": "ci", "hidden": true },
 		{ "type": "revert", "hidden": true }
-	],
-	"commitUrlFormat": "https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/commit/{{hash}}",
-	"compareUrlFormat": "https://github.com/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}"
+	]
   }

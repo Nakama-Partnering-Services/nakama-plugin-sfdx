@@ -1,0 +1,5 @@
+{
+	"commandDescription": "Replace the Flow members in a XML file by all the Obsolete flow versions in the default target org",
+	"pathToFileFlagDescription": "project relative path to the destructiveChange.xml",
+	"examples": ["sfdx nps:package:destructive:versionobsoleteflows --path deltas/destructiveChanges/destructiveChanges.xml"]
+}

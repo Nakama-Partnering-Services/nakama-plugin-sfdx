@@ -36,6 +36,7 @@
 		"oclif": "^3",
 		"prettier": "^2",
 		"rimraf": "latest",
+		"sfdx-node": "^3.5.0",
 		"sinon": "10.0.0",
 		"standard-version": "^9.5.0",
 		"ts-node": "^10",
@@ -59,7 +60,7 @@
 		"commands": "./lib/commands",
 		"bin": "sfdx"
 	},
-	"repository": "Nakama-Partnering-Services/nakama-plugin-sfdx",
+	"repository": "https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx",
 	"scripts": {
 		"build": "tsc -p .",
 		"lint": "eslint src/**/*.ts test/**/*.ts",
