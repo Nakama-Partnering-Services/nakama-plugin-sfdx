@@ -103,7 +103,7 @@ EXAMPLES
   $ sfdx nps:coverage:formatters:mappaths --path test-results/coverage/cobertura.xml --type cobertura
 ```
 
-_See code: [src/commands/nps/coverage/formatters/mappaths.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.1.0/src/commands/nps/coverage/formatters/mappaths.ts)_
+_See code: [src/commands/nps/coverage/formatters/mappaths.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.1.1/src/commands/nps/coverage/formatters/mappaths.ts)_
 
 ## `sfdx nps:coverage:verify -p <filepath> -c <array> [-r <integer>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -134,7 +134,7 @@ EXAMPLES
   $ sfdx nps:coverage:verify --path test-results/results.json --required-coverage 90 --classes AccountTriggerHandler,ContactTriggerHandler
 ```
 
-_See code: [src/commands/nps/coverage/verify.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.1.0/src/commands/nps/coverage/verify.ts)_
+_See code: [src/commands/nps/coverage/verify.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.1.1/src/commands/nps/coverage/verify.ts)_
 
 ## `sfdx nps:package:destructive:versionobsoleteflows -p <filepath> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -159,7 +159,7 @@ EXAMPLES
   $ sfdx nps:package:destructive:versionobsoleteflows --path deltas/destructiveChanges/destructiveChanges.xml
 ```
 
-_See code: [src/commands/nps/package/destructive/versionobsoleteflows.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.1.0/src/commands/nps/package/destructive/versionobsoleteflows.ts)_
+_See code: [src/commands/nps/package/destructive/versionobsoleteflows.ts](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/blob/v1.1.1/src/commands/nps/package/destructive/versionobsoleteflows.ts)_
 <!-- commandsstop -->
 
 ## Walkthrough
