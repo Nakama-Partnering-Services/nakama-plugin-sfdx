@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/compare/v1.1.2...v1.1.3) (2022-08-17)
+
+
+### Bug Fixes
+
+* replace sfdx-node by bash command ([3c5b522](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/commit/3c5b522a32b17a3c3e5411dd2429c57426f84de2))
+
 ### [1.1.2](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/compare/v1.1.1...v1.1.2) (2022-08-17)
 
 
