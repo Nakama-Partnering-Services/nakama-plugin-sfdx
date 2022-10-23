@@ -49,7 +49,10 @@ export default class Verify extends SfdxCommand {
 			.map((item) => item.class);
 
 		if (classesNotCovered.length) {
-			throw new SfError(messages.getMessage('errorClassesNotCovered', [coverage, classesNotCovered.join(', ')]), 'ClaasesNotCovered');
+			throw new SfError(
+				messages.getMessage('errorClassesNotCovered', [coverage, classesNotCovered.join(', ')]),
+				'ClaasesNotCovered'
+			);
 		}
 
 		this.ux.log(messages.getMessage('noClassesWithInsufficientCoverage'));
@@ -58,22 +61,11 @@ export default class Verify extends SfdxCommand {
 	}
 
 	get allClassesWithCoverage() {
-		const result = this.flags.classes.map((className) => {
-			const classDetails = this.apexTestResults[className];
-
-			if (!classDetails) {
-				throw new SfError(messages.getMessage('errorNoClassFound', [className]), 'NoClassFound');
-			}
-
-			const totalLines = classDetails.numLocations;
-			const linesNotCovered = classDetails.numLocationsNotCovered;
-			const linesCovered = totalLines - linesNotCovered;
-			const percentCoverage = (linesCovered / totalLines) * 100;
-			return {
-				class: className,
-				percentage: percentCoverage
-			};
-		});
+		// Note: sometimes NaN happens because numLocations and numLocationsNotCovered are both 0,
+		// for example, in Constants classes with just one line for a single constant variable
+		const result = this.flags.classes
+			.map((className) => this.mapCalculatedCoverageToClassName(className))
+			.filter((item) => !isNaN(item.percentage));
 
 		this.ux.log(messages.getMessage('listOfAnalyzedClasses'));
 		this.ux.log(result.map((coverage) => `${coverage.class}: ${coverage.percentage}%`).join('\n'));
@@ -82,8 +74,10 @@ export default class Verify extends SfdxCommand {
 	}
 
 	get apexTestResults() {
+		// Note: leave outside try/catch to allow self error propagation
+		const deploymentResult = this.deploymentResult;
 		try {
-			return this.deploymentResult.result.details.runTestResult.codeCoverage.reduce(
+			return deploymentResult.result.details.runTestResult.codeCoverage.reduce(
 				(result, detail) => ({
 					...result,
 					[detail.name]: detail
@@ -103,6 +97,29 @@ export default class Verify extends SfdxCommand {
 				messages.getMessage('errorNoCoverageFileFound', [this.flags.path]),
 				'NoCoverageFileFound'
 			);
+		}
+	}
+
+	mapCalculatedCoverageToClassName(className) {
+		{
+			const classDetails = this.apexTestResults[className];
+
+			if (!classDetails) {
+				return {
+					class: className,
+					percentage: 0
+				};
+			}
+
+			const totalLines = classDetails.numLocations;
+			const linesNotCovered = classDetails.numLocationsNotCovered;
+			const linesCovered = totalLines - linesNotCovered;
+			const percentCoverage = (linesCovered / totalLines) * 100;
+
+			return {
+				class: className,
+				percentage: percentCoverage
+			};
 		}
 	}
 }
