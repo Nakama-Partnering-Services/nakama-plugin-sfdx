@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.6](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/compare/v1.1.5...v1.1.6) (2022-11-28)
+
+
+### Bug Fixes
+
+* enhanced error report ([60d251d](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/commit/60d251d9fd82a7c60e2343e048b81363297f6f14))
+
 ### [1.1.5](https://github.com/Nakama-Partnering-Services/nakama-plugin-sfdx/compare/v1.1.4...v1.1.5) (2022-10-23)
 
 
