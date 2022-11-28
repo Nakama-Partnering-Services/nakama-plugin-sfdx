@@ -1,6 +1,6 @@
 import * as os from 'os';
 import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages } from '@salesforce/core';
+import { Messages, SfError } from '@salesforce/core';
 import { AnyJson } from '@salesforce/ts-types';
 
 import { readFileSync, writeFileSync } from 'fs';
@@ -51,12 +51,17 @@ const getFlowMembers = (packageTypes) => {
 };
 
 const getObsoleteFlowVersions = async (flowMembers) => {
-	const result = (
-		await syncExec(
-			`sfdx force:data:soql:query --query "SELECT Definition.DeveloperName, VersionNumber FROM Flow WHERE Status = 'Obsolete' AND Definition.DeveloperName IN ('${flowMembers}')" --usetoolingapi --json`
-		)
-	).stdout;
-	return JSON.parse(result).result.records;
+	try {
+		const result = (
+			await syncExec(
+				`sfdx force:data:soql:query --query "SELECT Definition.DeveloperName, VersionNumber FROM Flow WHERE Status = 'Obsolete' AND Definition.DeveloperName IN ('${flowMembers}')" --usetoolingapi --json`
+			)
+		).stdout;
+		return JSON.parse(result).result.records;
+	} catch (e) {
+		const stdout = JSON.parse(e.stdout);
+		throw new SfError(stdout.message, stdout.name);
+	}
 };
 
 const replaceFlowMembersWithObsoleteVersions = (obsoleteFlowVersions, packageTypes) => {
