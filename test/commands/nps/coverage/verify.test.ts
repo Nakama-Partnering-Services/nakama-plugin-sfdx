@@ -1,8 +1,7 @@
 import { test } from '@salesforce/command/lib/test';
 import { expect } from 'chai';
 
-// change
-const testDeploymentResultPath = 'test-results/example.json';
+const testDeploymentResultPath = 'test/fixtures/deployment-result.json';
 
 describe('nps:coverage:verify', async () => {
 	await testSetup()
