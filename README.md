@@ -80,7 +80,7 @@ If you run your CI/CD jobs inside a Docker image, you can add the plugin to your
 
 ## `sfdx nps:coverage:formatters:mappaths -p <filepath> -t cobertura [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
-Map the paths in a given file to replace them with the actual project relative location for classes and triggers
+Map the paths in a given file to replace them with the actual project relative location for classes and triggers. 
 
 ```
 USAGE
@@ -97,7 +97,10 @@ FLAGS
                                                                                     this command invocation
 
 DESCRIPTION
-  Map the paths in a given file to replace them with the actual project relative location for classes and triggers
+  Map the paths in a given file to replace them with the actual project relative location for classes and triggers.
+
+  Known Limitations: - Currently it only supports verification of coverage for apex classes, but not apex triggers nor
+  flows.
 
 EXAMPLES
   $ sfdx nps:coverage:formatters:mappaths --path test-results/coverage/cobertura.xml --type cobertura

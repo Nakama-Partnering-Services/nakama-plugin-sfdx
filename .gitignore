@@ -6,3 +6,5 @@
 /tmp
 node_modules
 bin
+oclif.manifest.json
+coverage
