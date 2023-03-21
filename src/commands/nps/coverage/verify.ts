@@ -35,7 +35,7 @@ export default class Verify extends SfdxCommand {
 		})
 	};
 
-	public async run(): Promise<{success: boolean, allClassesWithCoverage: ClassCoverage[]}> {
+	public async run(): Promise<{ success: boolean; allClassesWithCoverage: ClassCoverage[] }> {
 		const requiredCoverage: number = this.flags['required-coverage'];
 
 		const allClassesWithCoverage: ClassCoverage[] = this.getClassesWithCoverage();
@@ -56,12 +56,12 @@ export default class Verify extends SfdxCommand {
 		return { success: true, allClassesWithCoverage };
 	}
 
-	private getClassesWithCoverage()  {
+	private getClassesWithCoverage() {
 		// Note: sometimes NaN happens because numLocations and numLocationsNotCovered are both 0,
 		// for example, in Constants classes with just one line for a single constant variable
 		const apexTestResults: ApexTestResults = this.apexTestResults();
 		const result = this.flags.classes
-			.map((className) => this.calculateCoverage(className, apexTestResults))
+			.map((className) => this.calculateCoverage(apexTestResults[className]))
 			.filter((item) => !isNaN(item.percentage));
 
 		this.ux.log(messages.getMessage('listOfAnalyzedClasses'));
@@ -97,29 +97,24 @@ export default class Verify extends SfdxCommand {
 		}
 	}
 
-	private calculateCoverage(className, apexTestResults): ClassCoverage {
-		{
-			const testResult: ApexTestResult = apexTestResults[className]
-
-			if (!testResult) {
-				return {
-					class: className,
-					percentage: 0
-				};
-			}
-
-			const totalLines = testResult.numLocations;
-			const linesNotCovered = testResult.numLocationsNotCovered;
-			const linesCovered = totalLines - linesNotCovered;
-			const percentCoverage = (linesCovered / totalLines) * 100;
-
+	private calculateCoverage(testResult: ApexTestResult): ClassCoverage {
+		if (!testResult) {
 			return {
-				class: className,
-				percentage: percentCoverage
+				class: testResult.name,
+				percentage: 0
 			};
 		}
+
+		const totalLines = testResult.numLocations;
+		const linesNotCovered = testResult.numLocationsNotCovered;
+		const linesCovered = totalLines - linesNotCovered;
+		const percentCoverage = (linesCovered / totalLines) * 100;
+
+		return {
+			class: testResult.name,
+			percentage: percentCoverage
+		};
 	}
-	
 }
 
 interface ClassCoverage {
@@ -132,6 +127,7 @@ interface ApexTestResults {
 }
 
 interface ApexTestResult {
+	name: string;
 	numLocations: number;
 	numLocationsNotCovered: number;
 }
