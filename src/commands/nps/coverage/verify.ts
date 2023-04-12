@@ -1,5 +1,3 @@
-// Note: currently it only supports verification of coverage for apex classes, but not apex triggers nor flows.
-
 import * as os from 'os';
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages, SfError } from '@salesforce/core';
@@ -8,12 +6,10 @@ import { AnyJson } from '@salesforce/ts-types';
 import { resolve as resolvePath } from 'path';
 
 Messages.importMessagesDirectory(__dirname);
-
 const messages = Messages.loadMessages('nakama-plugin-sfdx', 'verify');
 
 export default class Verify extends SfdxCommand {
 	public static description = messages.getMessage('commandDescription');
-
 	public static examples = messages.getMessage('examples').split(os.EOL);
 
 	public static args = [{ name: 'file' }];
@@ -39,19 +35,19 @@ export default class Verify extends SfdxCommand {
 		})
 	};
 
-	public async run(): Promise<AnyJson> {
-		const coverage = this.flags['required-coverage'];
+	public async run(): Promise<{ success: boolean; allClassesWithCoverage: ClassCoverage[] }> {
+		const requiredCoverage: number = this.flags['required-coverage'];
 
-		const allClassesWithCoverage = this.allClassesWithCoverage;
+		const allClassesWithCoverage: ClassCoverage[] = this.getClassesWithCoverage();
 
-		const classesNotCovered = allClassesWithCoverage
-			.filter((item) => item.percentage < coverage)
+		const classesNotCovered: String[] = allClassesWithCoverage
+			.filter((item) => item.percentage < requiredCoverage)
 			.map((item) => item.class);
 
 		if (classesNotCovered.length) {
 			throw new SfError(
-				messages.getMessage('errorClassesNotCovered', [coverage, classesNotCovered.join(', ')]),
-				'ClaasesNotCovered'
+				messages.getMessage('errorClassesNotCovered', [requiredCoverage, classesNotCovered.join(', ')]),
+				'ClassesNotCovered'
 			);
 		}
 
@@ -60,11 +56,12 @@ export default class Verify extends SfdxCommand {
 		return { success: true, allClassesWithCoverage };
 	}
 
-	get allClassesWithCoverage() {
+	private getClassesWithCoverage() {
 		// Note: sometimes NaN happens because numLocations and numLocationsNotCovered are both 0,
 		// for example, in Constants classes with just one line for a single constant variable
+		const apexTestResults: ApexTestResults = this.apexTestResults();
 		const result = this.flags.classes
-			.map((className) => this.mapCalculatedCoverageToClassName(className))
+			.map((className) => this.calculateCoverage(apexTestResults[className]))
 			.filter((item) => !isNaN(item.percentage));
 
 		this.ux.log(messages.getMessage('listOfAnalyzedClasses'));
@@ -73,9 +70,9 @@ export default class Verify extends SfdxCommand {
 		return result;
 	}
 
-	get apexTestResults() {
+	private apexTestResults(): ApexTestResults {
 		// Note: leave outside try/catch to allow self error propagation
-		const deploymentResult = this.deploymentResult;
+		const deploymentResult: any = this.getDeploymentResult();
 		try {
 			return deploymentResult.result.details.runTestResult.codeCoverage.reduce(
 				(result, detail) => ({
@@ -89,7 +86,7 @@ export default class Verify extends SfdxCommand {
 		}
 	}
 
-	get deploymentResult() {
+	private getDeploymentResult(): AnyJson {
 		try {
 			return require(resolvePath(this.flags.path));
 		} catch (e) {
@@ -100,26 +97,37 @@ export default class Verify extends SfdxCommand {
 		}
 	}
 
-	mapCalculatedCoverageToClassName(className) {
-		{
-			const classDetails = this.apexTestResults[className];
-
-			if (!classDetails) {
-				return {
-					class: className,
-					percentage: 0
-				};
-			}
-
-			const totalLines = classDetails.numLocations;
-			const linesNotCovered = classDetails.numLocationsNotCovered;
-			const linesCovered = totalLines - linesNotCovered;
-			const percentCoverage = (linesCovered / totalLines) * 100;
-
+	private calculateCoverage(testResult: ApexTestResult): ClassCoverage {
+		if (!testResult) {
 			return {
-				class: className,
-				percentage: percentCoverage
+				class: testResult.name,
+				percentage: 0
 			};
 		}
+
+		const totalLines = testResult.numLocations;
+		const linesNotCovered = testResult.numLocationsNotCovered;
+		const linesCovered = totalLines - linesNotCovered;
+		const percentCoverage = (linesCovered / totalLines) * 100;
+
+		return {
+			class: testResult.name,
+			percentage: percentCoverage
+		};
 	}
+}
+
+interface ClassCoverage {
+	class: string;
+	percentage: number;
+}
+
+interface ApexTestResults {
+	[key: string]: ApexTestResult;
+}
+
+interface ApexTestResult {
+	name: string;
+	numLocations: number;
+	numLocationsNotCovered: number;
 }

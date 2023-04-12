@@ -5,3 +5,6 @@
 /lib
 /tmp
 node_modules
+bin/
+oclif.manifest.json
+lcov-report*
